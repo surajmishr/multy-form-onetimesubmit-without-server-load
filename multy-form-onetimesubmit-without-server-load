@@ -1,0 +1,54 @@
+<script>
+    function submitAllForms() {
+        // Retrieve values from form fields
+        var name = $('#name').val();
+        var prefix_to_dial = $('#prefix_to_dial').val();
+        var pro_reco_fld = $('#pro_reco_fld').val();
+
+        // Clear existing error messages
+        $('.error-message').text('');
+
+        // Perform validation
+        if (name.trim() === '') {
+            $('#name-error').text('Name cannot be empty');
+            return;
+        }
+
+        if (prefix_to_dial.trim() === '') {
+            $('#prefix-error').text('Prefix to Dial cannot be empty');
+            return;
+        }
+
+        if (pro_reco_fld.trim() === '') {
+            $('#pro-error').text('Pro Reco Field cannot be empty');
+            return;
+        }
+
+        // If validation passes, proceed with AJAX request
+        $.ajax({
+            type: 'POST',
+            url: 'add_update_process',
+            data: $('#form1, #form2, #form3, #form4').serialize(),
+
+            success: function(response) {
+                var flashDiv = $('#flash-messages');
+
+                if (response.status === 'success') {
+                    // Append success message to the div
+                    flashDiv.append('<div class="alert alert-success">' + response.message + '</div>');
+                    // Redirect to another page
+                    window.location.href = "/lms/process_master";
+                } else {
+                    // Append error message to the div
+                    flashDiv.append('<div class="alert alert-success">' + response.message + '</div>');
+                    console.log('Unexpected response:', response);
+                }
+            },
+
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                // Handle error response here
+                alert('Error occurred while processing the request. Please try again.');
+            }
+        });
+    }
